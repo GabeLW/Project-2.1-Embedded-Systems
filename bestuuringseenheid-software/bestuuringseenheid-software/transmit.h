@@ -7,10 +7,10 @@
 
 #include <stdint.h>
 
-#ifndef UART_H_
-#define UART_H_
+#ifndef TRANSMIT_H_
+#define TRANSMIT_H_
 
 void uart_init(void);
 void transmit(uint8_t data);
 
-#endif /* UART_H_ */
+#endif /* TRANSMIT_H_ */
