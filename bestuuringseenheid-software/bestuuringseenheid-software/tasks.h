@@ -8,8 +8,6 @@
 #ifndef TASKS_H_
 #define TASKS_H_
 
-// Function prototypes
-//-------------------------------------------------------------------
 void init(void);
 void up(void);
 void down(void);
