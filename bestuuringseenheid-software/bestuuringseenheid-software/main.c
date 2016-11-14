@@ -5,9 +5,10 @@
  *  Author: Bas Haaksema
  */ 
 
-#include "scheduler.h"
 #include "leds.h"
-#include "light.h"
+#include "scheduler.h"
+#include "sensors.h"
+#include "uart.h"
 
 int main()
 {
@@ -16,8 +17,9 @@ int main()
 
 	// Causes a task (function) to be executed at regular intervals or after a user-defined delay
 	SCH_Add_Task(init_leds, 0, 0);
-	SCH_Add_Task(init_adc_light, 100, 0);
-	SCH_Add_Task(get_adc_light, 250, 500);
+	SCH_Add_Task(uart_init, 10, 0);
+	SCH_Add_Task(get_adc_light, 25, 100);
+	SCH_Add_Task(get_adc_temperature, 75, 100);
 
 	// Starts the scheduler, by enabling interrupts.
 	SCH_Start();

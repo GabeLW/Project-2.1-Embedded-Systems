@@ -121,16 +121,16 @@
     <Compile Include="leds.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="light.h">
+    <Compile Include="sensors.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="light.c">
+    <Compile Include="sensors.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="transmit.c">
+    <Compile Include="uart.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="transmit.h">
+    <Compile Include="uart.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>
