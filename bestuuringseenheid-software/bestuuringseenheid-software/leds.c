@@ -1,37 +1,37 @@
 /*
- * tasks.c
+ * leds.c
  *
  * Created: 08-Nov-16 15:29:50
  *  Author: Bas Haaksema
  */ 
  
-#include "tasks.h"
+#include "leds.h"
 #include <avr/io.h>
 #define F_CPU 16E6
 #include <util/delay.h>
 
-void init()
+void init_leds()
 {
 	DDRB = 0xFF;
 	PORTB |= (1 << PB0);
 	PORTB &= ~(1 << PB2);
 }
 
-void up()
+void up_leds()
 {
 	PORTB &= ~(1 << PB2);
-	blink();
+	blink_led();
 	PORTB |= (1 << PB0);
 }
 
-void down()
+void down_leds()
 {
 	PORTB &= ~(1 << PB0);
-	blink();	
+	blink_led();	
 	PORTB |= (1 << PB2);
 }
 
-void blink()
+void blink_led()
 {
 	_delay_ms(250);
 	int i;

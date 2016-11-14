@@ -115,10 +115,10 @@
     <Compile Include="scheduler.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks.c">
+    <Compile Include="leds.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="tasks.h">
+    <Compile Include="leds.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="light.h">
