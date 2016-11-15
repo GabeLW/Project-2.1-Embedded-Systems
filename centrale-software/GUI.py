@@ -1,11 +1,36 @@
-#for Python 2
+#for Python 3
 import tkinter as tk
 from tkinter import ttk
-#for Python 3
-#import tkinter as tk
-#from tkinter import ttk
- 
-import platform
+import serial
+import serial.tools.list_ports
+from ctypes import c_uint8
+from time import sleep
+
+DeviceInfo = {
+    'tab1' : {'mode' : 'manual', 'status' : 'up'},
+    'tab2' : {'mode' : 'manual', 'status' : 'up'},
+    'tab3' : {'mode' : 'manual', 'status' : 'up'},
+    'tab4' : {'mode' : 'manual', 'status' : 'up'},
+    'tab5' : {'mode' : 'manual', 'status' : 'up'}
+    }
+    
+arduino_ports = []
+def checkDevices():
+    global arduino_ports
+    arduino_ports = [p.device for p in serial.tools.list_ports.comports()
+                     if 'Arduino' in p.description
+                     ]
+    if not arduino_ports:
+        tkLabelTop['text'] = 'No Arduino found!'
+        for x in range(5):
+            if (notebook.tab(x, option='state') == 'normal'):
+                toggleTab(x)
+    if len(arduino_ports) >= 1:
+        tkLabelTop['text'] = ''
+        print('Aantal aangesloten apparaten: ' + str(len(arduino_ports)))
+        for x in range(len(arduino_ports)):
+            toggleTab(x)
+    print(arduino_ports)
 
 def quit():
     global tkgui
@@ -16,8 +41,52 @@ def toggleTab(deviceID):
         notebook.tab(deviceID, state='disabled')
     else:
         notebook.tab(deviceID, state='normal')
+        
+def toggleScreen(tabName):
+    ser = serial.Serial('COM4', 9600)
+    sleep(3)
+    if (deviceInfo[tabName]['status'] == 'up'):
+        ser.write(c_uint8(int(255)))
+    else:
+        ser.write(c_uint8(int(0)))
+        
+def createPlot():
+    pass
+
+def toggleMode(tabName, labelNumber):
+    if(DeviceInfo[tabName]['mode'] == 'manual'):
+        DeviceInfo[tabName]['mode'] = 'automatic'
+        labelNumber['text'] = DeviceInfo[tabName]['mode']
+    else:
+        DeviceInfo[tabName]['mode'] = 'manual'
+        labelNumber['text'] = DeviceInfo[tabName]['mode']
+
+def fillTab(frameNumber, tabName, labelNumber):
     
-    
+    tkToggleTabButton = tk.Button(
+        frameNumber,
+        text='Toggle tab 2',
+        command= lambda: toggleTab(1))
+    tkToggleTabButton.grid(column=0,row=0)
+
+    tkToggleScreenButton = tk.Button(
+        frameNumber,
+        text='Toggle Screen',
+        command=lambda: toggleScreen(tabName))
+    tkToggleScreenButton.grid(column=0,row=1)
+
+    tkCreatePlot = tk.Button(
+        frameNumber,
+        text='Toggle mode',
+        command=lambda: toggleMode(tabName, labelNumber))
+    tkCreatePlot.grid(column=0,row=2)
+
+    tkModeLabel1 = tk.Label(frameNumber, text='Modus: ')
+    tkModeLabel1.grid(column=1,row=2)
+   
+    labelNumber = tk.Label(frameNumber, text=DeviceInfo['tab1']['mode'])
+    labelNumber.grid(column=2,row=2)
+
 #Make a window 
 tkgui = tk.Tk()
 #set window size
@@ -26,44 +95,44 @@ tkgui.geometry('500x300')
 tkgui.title('Besturingscentrale')
 
 #make label
-tkLabelTop = tk.Label(tkgui, text="Hier kan ook nog tekst")
+tkLabelTop = tk.Label(tkgui, text='')
 #pack the label
 tkLabelTop.pack()
 
 #create a notebook
 notebook = ttk.Notebook(tkgui, width=500)
 frame1 = ttk.Frame(notebook)
+frame1.grid()
 frame2 = ttk.Frame(notebook)
+frame2.grid()
 frame3 = ttk.Frame(notebook)
 frame4 = ttk.Frame(notebook)
 frame5 = ttk.Frame(notebook)
-notebook.add(frame1, text='Tab 1', sticky='EW')
-notebook.add(frame2, text='Tab 2', sticky='EW')
-notebook.add(frame3, text='Tab 3', sticky='EW')
-notebook.add(frame4, text='Tab 4', sticky='EW')
-notebook.add(frame5, text='Tab 5', sticky='EW')
+notebook.add(frame1, text='Tab 1', sticky='EW', state='disabled')
+notebook.add(frame2, text='Tab 2', sticky='EW', state='disabled')
+notebook.add(frame3, text='Tab 3', sticky='EW', state='disabled')
+notebook.add(frame4, text='Tab 4', sticky='EW', state='disabled')
+notebook.add(frame5, text='Tab 5', sticky='EW', state='disabled')
 notebook.pack()
+
+fillTab(frame1, 'tab1', 'label1')
+fillTab(frame2, 'tab2', 'label2')
+fillTab(frame3, 'tab3', 'label3')
+fillTab(frame4, 'tab4', 'label4')
+fillTab(frame5, 'tab5', 'label5')
+
+tkButtonCheckDevices = tk.Button(
+    tkgui,
+    text='Check for devices',
+    command=checkDevices)
+tkButtonCheckDevices.pack()
 
 tkButtonQuit = tk.Button(
     tkgui,
-    text="Quit",
+    text='Quit',
     command=quit)
 tkButtonQuit.pack()
 
-tkToggleTab2Button = tk.Button(
-    frame1,
-    text="enable Tab 2",
-    command= lambda: toggleTab(1))
-tkToggleTab2Button.pack()
-   
-tkLabel = tk.Label(frame1, text="Zet tekst hier neer...")
-tkLabel.pack()
- 
-strVersion = "running Python version " + platform.python_version()
-tkLabelVersion = tk.Label(frame2, text=strVersion)
-tkLabelVersion.pack()
-strPlatform = "Platform: " + platform.platform()
-tkLabelPlatform = tk.Label(frame2, text=strPlatform)
-tkLabelPlatform.pack()
- 
+checkDevices()
+#tkgui.after(5000, checkDevices)
 tkgui.mainloop()
