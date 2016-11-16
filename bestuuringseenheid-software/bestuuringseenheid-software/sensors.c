@@ -12,7 +12,7 @@
 
 void get_adc_light()
 {
-	uint8_t sign = 0x00;
+	uint8_t sign = 0x7F;
 	// ref=Vcc, left adjust the result (8 bit resolution),
 	// select channel 0 (PC0 = input)	ADMUX = (1<<REFS0)|(1<<ADLAR);
 	// enable the ADC & prescale = 128
