@@ -7,19 +7,21 @@ from ctypes import c_uint8
 from time import sleep
 from Plot import Plot
 
-DeviceInfo = {
-    'tab1' : {'mode' : 'manual', 'status' : 'up', 'ser1' : 'None'},
-    'tab2' : {'mode' : 'manual', 'status' : 'up', 'ser2' : 'None'},
-    'tab3' : {'mode' : 'manual', 'status' : 'up', 'ser3' : 'None'},
-    'tab4' : {'mode' : 'manual', 'status' : 'up', 'ser4' : 'None'},
-    'tab5' : {'mode' : 'manual', 'status' : 'up', 'ser5' : 'None'}
+deviceInfo = {
+    'tab1' : {'mode' : 'manual', 'status' : 'up'},
+    'tab2' : {'mode' : 'manual', 'status' : 'up'},
+    'tab3' : {'mode' : 'manual', 'status' : 'up'},
+    'tab4' : {'mode' : 'manual', 'status' : 'up'},
+    'tab5' : {'mode' : 'manual', 'status' : 'up'}
     }
 connectedDevices = []
 amountOfArduinos = 0
+ser = 0
     
 def checkDevices():
     global connectedDevices
     global amountOfArduinos
+    global ser
     
     arduino_ports = [p.device for p in serial.tools.list_ports.comports()
                      if 'Arduino' in p.description
@@ -45,6 +47,7 @@ def checkDevices():
                 toggleTab(x)
                 connectedDevices.append(arduino_ports[x])
                 amountOfArduinos += 1
+                ser = serial.Serial(connectedDevices[0], 9600)
 
     tkgui.after(5000, checkDevices)
 
@@ -59,14 +62,15 @@ def toggleTab(deviceID):
         notebook.tab(deviceID, state='normal')
         
 def toggleScreen(tabName):
-    ser = serial.Serial('COM5', 9600)
+    global ser
     if(ser.isOpen() == False):
-        ser = serial.Serial('COM5', 9600)
-    sleep(3)
+        ser = serial.Serial(connectedDevices[0], 9600)
     if (deviceInfo[tabName]['status'] == 'up'):
-        ser.write(c_uint8(int(255)))
+        ser.write(c_uint8(int('0x0b', 16))) #0b = rood lampje aan
+        deviceInfo[tabName]['status'] = 'down'
     else:
-        ser.write(c_uint8(int(0)))
+        ser.write(c_uint8(int('0x0a', 16)))
+        deviceInfo[tabName]['status'] = 'up'
 
 def toggleMode(tabName, labelNumber):
     if(DeviceInfo[tabName]['mode'] == 'manual'):
@@ -93,10 +97,10 @@ def fillTab(frameNumber, tabName, labelNumber):
     Graph = Plot(frameNumber, 0, 5)
     Graph2 = Plot(frameNumber, 1, 5)
     
-    tkgui.after(300, Graph.step(90))
-    tkgui.root.update()
+    #tkgui.after(300, Graph.step(90))
+    #tkgui.root.update()
     
-    labelNumber = tk.Label(frameNumber, text='Modus: %s' % (DeviceInfo[tabName]['mode']))
+    labelNumber = tk.Label(frameNumber, text='Modus: %s' % (deviceInfo[tabName]['mode']))
     labelNumber.grid(column=0, row=3, sticky='W')
 
 def gatherData():
