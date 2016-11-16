@@ -27,22 +27,22 @@ class Plot:
             canvas.create_text(20, y, text='%d'% (10 * i), anchor=E)
 
     def step(self, value):
-        value = (1 - value/100) * 550 + value/100 * 50
+        value = (1 - value/255) * 550 + value/255 * 50
         if self.s == 11:
             # new frame
             self.s = 1
             self.x2 = 50
-            self.canvas.delete('temp') # only delete items tagged as temp
+            canvas.delete('temp') # only delete items tagged as temp
         x1 = self.x2
         y1 = self.y2
         self.x2 = 50 + self.s * 50
         self.y2 = value
-        self.canvas.create_line(x1, y1, self.x2, self.y2, fill='black', tags='temp')
+        canvas.create_line(x1, y1, self.x2, self.y2, fill='black', tags='temp')
         self.s += 1
 
 if __name__ == "__main__":
     MyPlot = Plot()
-    MyPlot.canvas.after(300, MyPlot.step(10))
+    MyPlot.canvas.after(300, MyPlot.step(0))
     MyPlot.root.update() # loop these two statements
-    MyPlot.canvas.after(300, MyPlot.step(90))
+    MyPlot.canvas.after(300, MyPlot.step(255))
     MyPlot.root.update() # loop these two statements
