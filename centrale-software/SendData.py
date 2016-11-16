@@ -8,4 +8,4 @@ sleep(5)
 
 ser.write(c_uint8(int(255)))
 sleep(5)
-ser.write(c_uint8(int(0)))
+ser.write(c_uint8(int(127)))
