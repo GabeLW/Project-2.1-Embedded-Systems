@@ -8,33 +8,44 @@ from time import sleep
 from Plot import Plot
 
 DeviceInfo = {
-    'tab1' : {'mode' : 'manual', 'status' : 'up'},
-    'tab2' : {'mode' : 'manual', 'status' : 'up'},
-    'tab3' : {'mode' : 'manual', 'status' : 'up'},
-    'tab4' : {'mode' : 'manual', 'status' : 'up'},
-    'tab5' : {'mode' : 'manual', 'status' : 'up'}
+    'tab1' : {'mode' : 'manual', 'status' : 'up', 'ser1' : 'None'},
+    'tab2' : {'mode' : 'manual', 'status' : 'up', 'ser2' : 'None'},
+    'tab3' : {'mode' : 'manual', 'status' : 'up', 'ser3' : 'None'},
+    'tab4' : {'mode' : 'manual', 'status' : 'up', 'ser4' : 'None'},
+    'tab5' : {'mode' : 'manual', 'status' : 'up', 'ser5' : 'None'}
     }
-ConnectedDevices = []
+connectedDevices = []
+amountOfArduinos = 0
     
-arduino_ports = []
 def checkDevices():
+    global connectedDevices
+    global amountOfArduinos
     
     arduino_ports = [p.device for p in serial.tools.list_ports.comports()
                      if 'Arduino' in p.description
                      ]
+    
     if not arduino_ports:
         tkLabelTop['text'] = 'No Arduino found!'
         for x in range(5):
             if (notebook.tab(x, option='state') == 'normal'):
                 toggleTab(x)
-                ConnectedDevices[:] = []
-    if len(arduino_ports) >= 1:
+                connectedDevices[:] = []
+
+    if len(arduino_ports) < amountOfArduinos:
+        temp = connectedDevices
+        toggleTab(len(arduino_ports))
+        [connectedDevices.remove(i) for i in arduino_ports if i in temp]
+        amountOfArduinos -= 1
+        
+    if len(arduino_ports) > amountOfArduinos:
         tkLabelTop['text'] = ''
         for x in range(len(arduino_ports)):
-            if not (arduino_ports[x] in ConnectedDevices):
+            if not (arduino_ports[x] in connectedDevices):
                 toggleTab(x)
-                ConnectedDevices.append(arduino_ports[x])
-                print(ConnectedDevices)
+                connectedDevices.append(arduino_ports[x])
+                amountOfArduinos += 1
+
     tkgui.after(5000, checkDevices)
 
 def quit():
@@ -48,15 +59,14 @@ def toggleTab(deviceID):
         notebook.tab(deviceID, state='normal')
         
 def toggleScreen(tabName):
-    ser = serial.Serial('COM4', 9600)
+    ser = serial.Serial('COM5', 9600)
+    if(ser.isOpen() == False):
+        ser = serial.Serial('COM5', 9600)
     sleep(3)
     if (deviceInfo[tabName]['status'] == 'up'):
         ser.write(c_uint8(int(255)))
     else:
         ser.write(c_uint8(int(0)))
-        
-def createPlot():
-    pass
 
 def toggleMode(tabName, labelNumber):
     if(DeviceInfo[tabName]['mode'] == 'manual'):
@@ -83,8 +93,15 @@ def fillTab(frameNumber, tabName, labelNumber):
     Graph = Plot(frameNumber, 0, 5)
     Graph2 = Plot(frameNumber, 1, 5)
     
+    tkgui.after(300, Graph.step(90))
+    tkgui.root.update()
+    
     labelNumber = tk.Label(frameNumber, text='Modus: %s' % (DeviceInfo[tabName]['mode']))
     labelNumber.grid(column=0, row=3, sticky='W')
+
+def gatherData():
+    pass
+    tkgui.after(2000, gatherData)
 
 #Make a window 
 tkgui = tk.Tk()
@@ -137,4 +154,5 @@ tkButtonQuit.pack()
 
 checkDevices()
 tkgui.after(3000, checkDevices)
+#tkgui.after(2000, gatherData)
 tkgui.mainloop()
