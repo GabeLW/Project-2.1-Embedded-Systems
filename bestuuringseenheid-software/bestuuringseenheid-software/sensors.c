@@ -12,7 +12,7 @@
 
 void get_adc_light()
 {
-	uint8_t sign = 0x00;
+	uint8_t sign = 0x0A;
 	// ref=Vcc, left adjust the result (8 bit resolution),
 	// select channel 0 (PC0 = input)	ADMUX = (1<<REFS0)|(1<<ADLAR);
 	// enable the ADC & prescale = 128
@@ -27,7 +27,7 @@ void get_adc_light()
 
 void get_adc_temperature()
 {
-	uint8_t sign = 0xFF;
+	uint8_t sign = 0x0B;
 	// ref=Vcc, left adjust the result (8 bit resolution),
 	// select channel 0 (PC0 = input)	ADMUX = (1<<REFS0)|(1<<ADLAR)|(1<<MUX0);
 	// enable the ADC & prescale = 128
