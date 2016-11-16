@@ -9,9 +9,9 @@ while True:
     for x in range(2):
         ser.write(c_uint8(int(0)))
         s = ser.read()
-        if (s.hex() == '7f'):
+        if (s.hex() == '0a'):
             s = ser.read()
             print('Lichtintensiteit is: ' + s.hex())
-        elif (s.hex() == 'ff'):
+        elif (s.hex() == '0b'):
             s = ser.read()
             print('Tempereatuur is : ' + s.hex())
