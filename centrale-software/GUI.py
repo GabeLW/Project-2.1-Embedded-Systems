@@ -13,10 +13,11 @@ DeviceInfo = {
     'tab4' : {'mode' : 'manual', 'status' : 'up'},
     'tab5' : {'mode' : 'manual', 'status' : 'up'}
     }
+ConnectedDevices = []
     
 arduino_ports = []
 def checkDevices():
-    global arduino_ports
+    
     arduino_ports = [p.device for p in serial.tools.list_ports.comports()
                      if 'Arduino' in p.description
                      ]
@@ -25,12 +26,15 @@ def checkDevices():
         for x in range(5):
             if (notebook.tab(x, option='state') == 'normal'):
                 toggleTab(x)
+                ConnectedDevices[:] = []
     if len(arduino_ports) >= 1:
         tkLabelTop['text'] = ''
-        print('Aantal aangesloten apparaten: ' + str(len(arduino_ports)))
         for x in range(len(arduino_ports)):
-            toggleTab(x)
-    print(arduino_ports)
+            if not (arduino_ports[x] in ConnectedDevices):
+                toggleTab(x)
+                ConnectedDevices.append(arduino_ports[x])
+                print(ConnectedDevices)
+    tkgui.after(5000, checkDevices)
 
 def quit():
     global tkgui
@@ -75,12 +79,12 @@ def fillTab(frameNumber, tabName, labelNumber):
         command=lambda: toggleScreen(tabName))
     tkToggleScreenButton.grid(column=0,row=1)
 
-    tkCreatePlot = tk.Button(
+    tkToggleModeButton = tk.Button(
         frameNumber,
         text='Toggle mode',
         command=lambda: toggleMode(tabName, labelNumber))
-    tkCreatePlot.grid(column=0,row=2)
-
+    tkToggleModeButton.grid(column=0,row=2)
+    
     tkModeLabel1 = tk.Label(frameNumber, text='Modus: ')
     tkModeLabel1.grid(column=1,row=2)
    
@@ -90,7 +94,7 @@ def fillTab(frameNumber, tabName, labelNumber):
 #Make a window 
 tkgui = tk.Tk()
 #set window size
-tkgui.geometry('500x300')
+tkgui.geometry('500x330')
 #set window title
 tkgui.title('Besturingscentrale')
 
@@ -134,5 +138,5 @@ tkButtonQuit = tk.Button(
 tkButtonQuit.pack()
 
 checkDevices()
-#tkgui.after(5000, checkDevices)
+tkgui.after(3000, checkDevices)
 tkgui.mainloop()
