@@ -6,7 +6,9 @@
  */ 
  
 #include "leds.h"
+#include "uart.h"
 #include <avr/io.h>
+#include <stdint.h>
 #define F_CPU 16E6
 #include <util/delay.h>
 
@@ -17,29 +19,36 @@ void init_leds()
 	PORTB &= ~(1 << PB2);
 }
 
-void up_leds()
+void manage_leds()
 {
-	PORTB &= ~(1 << PB2);
-	blink_led();
-	PORTB |= (1 << PB0);
-}
+	uint8_t status = receive();
+	
+	if (status == 0x7F)
+	{
+		//up
+		PORTB &= ~(1 << PB2);
+		blink_led();
+		PORTB |= (1 << PB0);
+	}
 
-void down_leds()
-{
-	PORTB &= ~(1 << PB0);
-	blink_led();	
-	PORTB |= (1 << PB2);
+	if (status == 0xFF)
+	{
+		//down
+		PORTB &= ~(1 << PB0);
+		blink_led();
+		PORTB |= (1 << PB2);
+	}
 }
 
 void blink_led()
 {
-	_delay_ms(250);
+	_delay_ms(50);
 	int i;
 	for(i = 0; i < 5; i++)
 	{
 		PORTB |= (1 << PB1);
-		_delay_ms(250);
+		_delay_ms(50);
 		PORTB &= ~(1 << PB1);
-		_delay_ms(250);
+		_delay_ms(50);
 	}
 }

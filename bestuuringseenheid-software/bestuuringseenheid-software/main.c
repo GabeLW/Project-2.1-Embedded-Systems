@@ -17,9 +17,10 @@ int main()
 
 	// Causes a task (function) to be executed at regular intervals or after a user-defined delay
 	SCH_Add_Task(init_leds, 0, 0);
-	SCH_Add_Task(uart_init, 10, 0);
-	SCH_Add_Task(get_adc_light, 25, 100);
-	SCH_Add_Task(get_adc_temperature, 75, 100);
+	SCH_Add_Task(uart_init, 5, 0);
+	SCH_Add_Task(get_adc_light, 10, 50);
+	SCH_Add_Task(get_adc_temperature, 20, 50);
+	SCH_Add_Task(manage_leds, 30, 50);
 
 	// Starts the scheduler, by enabling interrupts.
 	SCH_Start();

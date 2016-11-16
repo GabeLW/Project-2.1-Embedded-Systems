@@ -9,8 +9,7 @@
 #define LEDS_H_
 
 void init_leds(void);
-void up_leds(void);
-void down_leds(void);
+void manage_leds(void);
 void blink_led(void);
 
 #endif /* LEDS_H_ */
