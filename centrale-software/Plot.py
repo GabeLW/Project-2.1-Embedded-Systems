@@ -27,6 +27,7 @@ class Plot:
             canvas.create_text(20, y, text='%d'% (10 * i), anchor=E)
 
     def step(self, value):
+        value = (1 - value/100) * 550 + value/100 * 50
         if self.s == 11:
             # new frame
             self.s = 1
@@ -39,6 +40,9 @@ class Plot:
         self.canvas.create_line(x1, y1, self.x2, self.y2, fill='black', tags='temp')
         self.s += 1
 
-#MyPlot = Plot()
-#MyPlot.canvas.after(300, MyPlot.step(250)) # 250 is measurement value
-#MyPlot.root.update() # loop these two statements
+if __name__ == "__main__":
+    MyPlot = Plot()
+    MyPlot.canvas.after(300, MyPlot.step(10))
+    MyPlot.root.update() # loop these two statements
+    MyPlot.canvas.after(300, MyPlot.step(90))
+    MyPlot.root.update() # loop these two statements
