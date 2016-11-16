@@ -12,5 +12,6 @@
 
 void uart_init(void);
 void transmit(uint8_t data);
+uint8_t receive(void);
 
 #endif /* UART_H_ */

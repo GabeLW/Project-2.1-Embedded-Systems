@@ -10,8 +10,8 @@
 #include <avr/sfr_defs.h>
 
 // output on USB = PD1 = board pin 1
-// datasheet p.190; F_OSC = 16 MHz & baud rate = 19.200
-#define UBBRVAL 51
+// datasheet p.190; F_OSC = 16 MHz & baud rate = 9.600
+#define UBBRVAL 103
 void uart_init()
 {
 	// set the baud rate
