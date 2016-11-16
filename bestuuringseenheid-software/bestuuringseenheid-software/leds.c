@@ -23,7 +23,7 @@ void manage_leds()
 {
 	uint8_t status = receive();
 	
-	if (status == 0x7F)
+	if (status == 0x0A)
 	{
 		//up
 		PORTB &= ~(1 << PB2);
@@ -31,7 +31,7 @@ void manage_leds()
 		PORTB |= (1 << PB0);
 	}
 
-	if (status == 0xFF)
+	if (status == 0x0B)
 	{
 		//down
 		PORTB &= ~(1 << PB0);
