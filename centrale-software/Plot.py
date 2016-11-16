@@ -42,6 +42,7 @@ class Plot:
         self.canvas.create_line(x1, y1, self.x2, self.y2, fill='black', tags='temp')
         self.s += 1
 
-MyPlot = Plot()
-MyPlot.canvas.after(300, MyPlot.step(250)) # 250 is measurement value
-MyPlot.root.update() # loop these two statements
+if __name__ == '__main__':
+    MyPlot = Plot()
+    MyPlot.canvas.after(300, MyPlot.step(250)) # 250 is measurement value
+    MyPlot.root.update() # loop these two statements

@@ -5,6 +5,7 @@ import serial
 import serial.tools.list_ports
 from ctypes import c_uint8
 from time import sleep
+from Plot import Plot
 
 DeviceInfo = {
     'tab1' : {'mode' : 'manual', 'status' : 'up'},
